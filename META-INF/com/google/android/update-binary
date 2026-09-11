@@ -29,4 +29,9 @@ mount /data 2>/dev/null
 [ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk
 
 install_module
+
+ui_print "== 打孔屏模拟设置处理 =="
+ui_print "  → 将在首次重启后自动把打孔屏模拟恢复为设备默认值"
+ui_print "  → 随后由模块无伤解锁四向旋转（无状态栏加宽）"
+ui_print "  → 仅一次，卸载后设置保持默认"
 exit 0
