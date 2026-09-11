@@ -2,15 +2,15 @@
 
 本文档记录本模块在 KernelSU 官方商店（`modules.kernelsu.org`）的上线状态和每次发版的更新步骤，供后续迭代及 agent 直接参照执行。
 
-## 现状（待提交）
+## 现状（已就绪）
 
 | 项目 | 值 |
 | --- | --- |
 | 模块 id | `oppo_pad_mini_rotate180` |
-| 源码仓库 | https://github.com/Sev73n/oppo_pad_mini_rotate180（待创建/推送） |
+| 源码仓库 | https://github.com/Sev73n/oppo_pad_mini_rotate180 ✅ 已推送 |
 | 官方仓库 | https://github.com/KernelSU-Modules-Repo/oppo_pad_mini_rotate180（待申请，需商店管理员权限） |
 | 商店页面 | https://modules.kernelsu.org/module/oppo_pad_mini_rotate180/（上线后生效） |
-| 已上线版本 | 无 |
+| 已上线版本 | 无（源码仓库已发布 v1.3，待商店收录） |
 
 - 源码仓库与官方仓库相互独立：日常开发在源码仓库进行，官方仓库仅用于商店展示与分发，通过 `module.json` 的 `sourceUrl` 字段关联。
 - 商店收录由官方机器人完成：官方仓库**新建 Release** 后，`KernelSU-Bot` 约 30 秒内自动触发增量构建，几分钟内商店生效。
