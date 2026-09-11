@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      解锁 180° 旋转的挖孔覆盖（ColorOS / Android 16）。
+
+      背景：ColorOS 在 system_server 中改写了 DisplayRotation 的取值逻辑：
+        DisplayRotationExtImpl.hookGetAllowAllRotations(allowAllRotations)
+          → OplusRotationAnimationManager.needBlockAllowAllRotations(allowAllRotations, 1)
+              - 非平板 → 不拦截
+              - allowAllRotations != 1 → 不拦截
+              - 挖孔不存在/取不到 → 不拦截
+              - 挖孔包围盒水平居中（容差 10px）→ 拦截（返回 0，禁止 180°）
+      因此：只要让系统认为"挖孔不在正中"，该拦截即失效。
+
+      本规格 = 原始居中挖孔路径（保持原位，顶部 inset 仍为 105px）
+              + 一个 1x1px 的隐形角标，@left 锚定左边缘，
+                使包围盒从 "807..873" 扩大为非居中区间，
+                居中判定期望值 (1680-宽)/2 与实际左边界差值远大于 10px，
+                从而判定为"非居中"，不再拦截 180°。
+      结果：insets 与原始完全一致（顶部 105px、无左右侧边内缩），
+            视觉无任何变化，但 180° 旋转解锁。
+    -->
+    <string name="config_mainBuiltInDisplayCutout">"M -33,0 L -33,105 L 33,105 L 33,0 Z M 0,0 L 1,0 L 1,1 L 0,1 Z @left"</string>
+    <string name="config_mainBuiltInDisplayCutoutRectApproximation">"M -33,0 L -33,105 L 33,105 L 33,0 Z M 0,0 L 1,0 L 1,1 L 0,1 Z @left"</string>
+</resources>

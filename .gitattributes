@@ -1,0 +1,7 @@
+# 强制脚本与配置文件使用 LF 换行，避免 Android 设备上解析出错
+*.sh text eol=lf
+*.prop text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+update-binary text eol=lf

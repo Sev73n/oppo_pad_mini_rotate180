@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sev73n.padmini.rotate180"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="29" android:targetSdkVersion="36" />
+    <application android:hasCode="false" />
+    <!-- 非静态（mutable）RRO overlay，安装后由模块的 service.sh 开机自动启用。
+         mutable overlay 的优先级高于系统静态 overlay（已在 OPPO Pad Mini 上实测）。 -->
+    <overlay android:targetPackage="android" />
+</manifest>
