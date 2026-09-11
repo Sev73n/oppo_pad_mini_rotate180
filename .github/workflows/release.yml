@@ -20,12 +20,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Show Android SDK
-        run: |
-          echo "SDK_ROOT=$ANDROID_SDK_ROOT"
-          ls "$ANDROID_SDK_ROOT/build-tools" 2>/dev/null || true
-          ls "$ANDROID_SDK_ROOT/platforms" 2>/dev/null || true
-
       - name: Build module zip
         run: bash build.sh
 

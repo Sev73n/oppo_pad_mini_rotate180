@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """把 rotate180 模块打包为 KernelSU / Magisk 模块 zip。
 
-用法：先运行 build.sh 生成 build/rotate180.apk，再运行本脚本。
 产物：dist/<id>_<version>.zip
 """
 import os
@@ -19,8 +18,6 @@ FILES = [
     "META-INF/com/google/android/update-binary",
     "META-INF/com/google/android/updater-script",
 ]
-APK_ENTRY = "system/vendor/overlay/rotate180.apk"
-APK_SRC = os.path.join(ROOT, "build", "rotate180.apk")
 
 EXEC = {"customize.sh", "service.sh", "META-INF/com/google/android/update-binary"}
 
@@ -29,9 +26,6 @@ DIRS = [
     "META-INF/com/",
     "META-INF/com/google/",
     "META-INF/com/google/android/",
-    "system/",
-    "system/vendor/",
-    "system/vendor/overlay/",
 ]
 
 S_IFREG = 0o100000
@@ -57,9 +51,6 @@ def add_file(z, src, arc):
 
 
 def main():
-    if not os.path.isfile(APK_SRC):
-        raise SystemExit("未找到 build/rotate180.apk，请先运行 build.sh")
-
     mid = re.sub(r"[^A-Za-z0-9_.-]", "_", read_prop("id").strip()) or "module"
     ver = re.sub(r"[^A-Za-z0-9_.-]", "_", read_prop("version").strip()) or "v1.0"
 
@@ -77,7 +68,6 @@ def main():
             print(f"  d {d}")
         for rel in FILES:
             add_file(z, os.path.join(ROOT, rel), rel)
-        add_file(z, APK_SRC, APK_ENTRY)
 
     print(f"\n打包完成: {out}")
     print(f"大小: {os.path.getsize(out)} 字节")

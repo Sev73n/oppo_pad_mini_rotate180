@@ -58,11 +58,16 @@ OplusRotationAnimationManager.needBlockAllowAllRotations(allowAll, 1)
 
 *这个拦截与任何设置项无关，是在代码层写死的。*
 
-模块通过 RRO（Runtime Resource Overlay）覆盖系统挖孔路径定义 
+本模块使用 **FabricatedOverlay（Android 13+ 运行时覆盖层）**直接覆盖系统挖孔路径
 `config_mainBuiltInDisplayCutout`：**在原居中挖孔路径旁边加一个 1×1px 的隐形角标**，
 使挖孔包围盒从居中变为不居中，拦截条件失效。
 
 同时挖孔 insets 保持原样（顶部 105px、无侧边内缩），因此 **视觉上完全无变化**。
+
+之前使用 APK 形式的 RRO 放在 `/vendor/overlay/` 中，但 KernelSU Ultra 的挂载时机
+晚于 PackageManager 扫描，导致 APK 无法注册。新版本改为 FabricatedOverlay，
+由 OverlayManagerService 直接在运行时创建，不经 PMS 扫描，不受签名/SELinux 限制。
+
 详细分析见 [STORE.md](STORE.md) 中的原理说明。
 
 ## 安装
@@ -71,26 +76,18 @@ OplusRotationAnimationManager.needBlockAllowAllRotations(allowAll, 1)
 2. 在 KernelSU / Magisk 管理器中「从本地安装」
 3. **重启**
 
-> ⚠️ **首次安装后可能需要重启两次**：
-> 第一次重启时模块的 overlay 才被系统扫描到（开机挂载），`service.sh` 会在开机后自动启用它（状态持久化到 `/data/system/overlays.xml`）；
-> 第二次重启时系统在开机早期即读到"非居中挖孔"，180° 判定通过。
->
-> 若第一次重启后 180° 不可用，**再重启一次**即可。
-
-> 💡 **首次重启时模块会自动处理开发者选项**：把「模拟屏幕缺口」恢复为设备默认值（仅一次，无副作用），
-> 随后由模块负责解锁 180°。刷入时安装脚本会显示对应进度提示。
+> 💡 `service.sh` 会在开机完成后自动创建 FabricatedOverlay，同时把「模拟屏幕缺口」
+> 恢复为设备默认值（仅一次，无副作用）。
 
 ## 验证
 
 ```sh
-# overlay 已启用（应显示 [x]）
-adb shell cmd overlay list | grep rotate180
+# fabricated overlay 已启用（应显示 [x]）
+adb shell cmd overlay list | grep rotate180cutout
 
-# 系统已解锁 180°（应显示 mAllowAllRotations=true）
-adb shell dumpsys window | grep mAllowAllRotations
-
-# 挖孔 insets 与原始一致（顶部应为 105px）
-adb shell dumpsys window displays | grep -m1 mDisplayCutout
+# 挖孔规格已变为"非居中"（包含 1×1px 角标 @left）
+adb shell dumpsys window displays | grep -o 'cutoutSpec={[^}]*}'
+# 应显示：... M 0,0 L 1,0 L 1,1 L 0,1 Z @left ...
 ```
 
 物理验证：开启自动旋转 → 把平板上下倒置 180° → 屏幕应跟随旋转。
@@ -101,33 +98,29 @@ adb shell dumpsys window displays | grep -m1 mDisplayCutout
 - 临时禁用（不删模块）：
 
   ```sh
-  cmd overlay disable --user 0 com.sev73n.padmini.rotate180
+  cmd overlay disable --user 0 com.android.shell:rotate180cutout
   ```
 
 ## 构建
 
 ```sh
 bash build.sh
-# 产物：dist/oppo_pad_mini_rotate180_v1.0.zip
+# 产物：dist/oppo_pad_mini_rotate180_v1.3.zip
 ```
 
-依赖：Python 3、Android SDK（aapt2 / zipalign / apksigner）、JDK（java）。Windows 下使用 Git Bash。
+依赖：仅 Python 3。不再需要 Android SDK / JDK。
 
 ## 仓库结构
 
 ```
 .
-├── overlay/                        RRO 覆盖层源码
-│   ├── AndroidManifest.xml
-│   └── res/values/strings.xml
 ├── customize.sh                    安装时进度提示（KernelSU / Magisk）
 ├── META-INF/com/google/android/     Magisk 安装脚本
 ├── module.prop                      模块元信息
 ├── module.json                      商店元信息
-├── service.sh                       开机自动启用 overlay
-├── build.sh                         编译脚本
-├── build_module.py                  打包脚本
-├── rotation.keystore                自签名密钥（已提交，详见 README 备注）
+├── service.sh                       开机创建并启用 FabricatedOverlay
+├── build.sh                         打包脚本
+├── build_module.py                  模块 zip 打包
 ├── .github/workflows/release.yml   CI 自动构建
 ├── README.md
 ├── STORE.md                        商店上线流程与更新指南
@@ -136,14 +129,12 @@ bash build.sh
 └── .gitignore
 ```
 
-关于 `rotation.keystore`：这是自签名调试密钥（密码 `android`），仅用于给 RRO APK 签名，**无安全价值**。纳管以保证构建可复现。
-
 ## 已知限制
 
-- 挖孔坐标基于 OPPO Pad Mini（1680×2520 @420dpi）实测；其他机型需调整 `overlay/res/values/strings.xml`
-- 首次安装需重启两次（原因见"安装"）
+- 挖孔坐标基于 OPPO Pad Mini（1680×2520 @420dpi）实测；其他机型需调整 `service.sh` 中的 `CUTOUT_SPEC`
+- 首次安装后重启一次生效；若 180° 未立即生效，再重启一次
 - 原理依赖当前版本 ColorOS 拦截逻辑，系统大版本更新后可能失效
-- OTA 升级后 overlay 状态保留，无需重新刷入
+- FabricatedOverlay 状态由 OverlayManagerService 持久化，OTA 升级后无需重新刷入
 
 ## 提交商店
 

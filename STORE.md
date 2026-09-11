@@ -70,14 +70,12 @@ gh release create 2-v1.1 "dist/oppo_pad_mini_rotate180_v1.1.zip" \
 
 `.github/workflows/release.yml` 在推送 `v*` tag 时触发：
 
-1. `bash build.sh`：自动探测 Android SDK（GitHub Actions 自带），编译 RRO APK 并打包模块 zip
+1. `bash build.sh`：调用 Python 打包模块 zip（仅需 Python 3，不需 Android SDK）
 2. 删除同名旧 Release（避免残留旧资产）
 3. 上传 `dist/*.zip` 并生成 Release
-
-注意：`build.sh` 需要 Android SDK 与 JDK，本地构建时请确保环境变量 `ANDROID_SDK_ROOT` 正确。
 
 ## 四、故障排查
 
 - **商店无更新**：确认官方仓库 Release 是"新建"而非编辑；确认 tag 格式为 `版本码-版本名`；确认默认分支为 `main`。
-- **CI 构建失败**：查看 Actions 日志，常见原因是 Android SDK 未找到或 JDK 未安装。
-- **模块刷入不生效**：`cmd overlay list | grep rotate180` 检查是否 `[x]`；若未启用可手动 `cmd overlay enable --user 0 com.sev73n.padmini.rotate180` 后重启。
+- **CI 构建失败**：查看 Actions 日志，常见原因是 Python 未安装或脚本报错。
+- **模块刷入不生效**：`cmd overlay list | grep rotate180cutout` 检查是否 `[x]`；若未启用可手动 `cmd overlay enable --user 0 rotate180cutout` 后重启。
