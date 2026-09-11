@@ -10,3 +10,7 @@ __pycache__/
 # IDE
 .idea/
 .vscode/
+
+# 工具状态与调试日志
+.mimosa/
+log/
