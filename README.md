@@ -120,7 +120,8 @@ bash build.sh
 ├── overlay/                        RRO 覆盖层源码
 │   ├── AndroidManifest.xml
 │   └── res/values/strings.xml
-├── META-INF/com/google/android/     Magisk / KernelSU 安装脚本
+├── customize.sh                    安装时进度提示（KernelSU / Magisk）
+├── META-INF/com/google/android/     Magisk 安装脚本
 ├── module.prop                      模块元信息
 ├── module.json                      商店元信息
 ├── service.sh                       开机自动启用 overlay

@@ -14,7 +14,6 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # (zip 内相对路径)
 FILES = [
     "module.prop",
-    "customize.sh",
     "service.sh",
     "META-INF/com/google/android/update-binary",
     "META-INF/com/google/android/updater-script",
@@ -22,7 +21,7 @@ FILES = [
 APK_ENTRY = "system/vendor/overlay/rotate180.apk"
 APK_SRC = os.path.join(ROOT, "build", "rotate180.apk")
 
-EXEC = {"customize.sh", "service.sh", "META-INF/com/google/android/update-binary"}
+EXEC = {"service.sh", "META-INF/com/google/android/update-binary"}
 
 DIRS = [
     "META-INF/",

@@ -1,0 +1,39 @@
+ ____        _    _ ____  _   _ 
+/ ___| _   _| | _(_) ___|| | | |
+\___ \| | | | |/ / \___ \| | | |
+ ___) | |_| |   <| |___) | |_| |
+|____/ \__,_|_|\_\_|____/ \___/ 
+     _   _ _ _                  
+    | | | | | |_ _ __ __ _      
+    | | | | | __| '__/ _\ |     
+    | |_| | | |_| | | (_| |     
+     \___/|_|\__|_|  \__,_|     
+- Module size: 11.16 kB
+- Installing to /data/adb/modules_update/oppo_pad_mini_rotate180
+- Extracting module files
+- Running module installer
+- Hybrid Mount metainstall
+- Current boot slot: _b
+- Device is system-as-root
+Archive:  /data/user/0/com.sukisu.ultra/cache/module.zip
+  inflating: module.prop
+**********************************
+ OPPO Pad Mini 四向旋转解锁 
+ by 73 
+**********************************
+*********************
+ Powered by KernelSU 
+*********************
+Archive:  /data/user/0/com.sukisu.ultra/cache/module.zip
+- Extracting module files
+Archive:  /data/user/0/com.sukisu.ultra/cache/module.zip
+   creating: system/
+   creating: system/vendor/
+   creating: system/vendor/overlay/
+  inflating: module.prop
+  inflating: service.sh
+  inflating: system/vendor/overlay/rotate180.apk
+- Done
+- linked /vendor
+- installation partition layout ready
+- Module installed successfully!
